@@ -1,0 +1,13 @@
+# Pulls the archlinux package
+# Run locally on my own computer
+
+docker pull base/archlinux
+
+cd /home/jia/Documents/Code/CS854/fall2017_cs854
+
+docker build -t jwu424/cs_854_fall2017 .
+
+
+
+# Enter Container
+docker run --privileged -it -v /home/jia/Documents/Code/CS854/fall2017_cs854:/data -v /:/host jwu424/cs_854_fall2017

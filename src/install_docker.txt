@@ -1,0 +1,24 @@
+# The following is a condensed version of this tutorial:
+# https://linuxhint.com/arch-linux-docker-tutori
+# On a clean installation of a new FS:
+# This command determines if the loop module is loaded
+
+lsmod | grep loop
+
+# IF there is no output, run this:
+# The next 2 lines add "loop" to the loop.conf, and adds the loop module to the linux kernel
+
+sudo tee /etc/modules-load.d/loop.conf <<< "loop"
+sudo modprobe loop
+
+# Install the docker daemon
+
+sudo pacman -S docker
+
+# Start the docker daemon, enable docker daemon on boot up
+
+sudo systemctl start docker.service
+sudo systemctl enable docker.service
+
+
+

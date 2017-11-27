@@ -1,0 +1,17 @@
+# Enter archlinux container
+docker run --privileged -it -v /home/jia/Documents/Code/CS854/fall2017_cs854:/data -v /:/host jwu424/cs_854_fall2017
+
+cd /data
+
+# Configure it so the basic tools "make" etc are installed so filebench can be built
+pacman -Syu --debug
+pacman -S base-devel
+
+# Move to filebench directory
+cd /data/filebench/filebench-1.5-alpha3
+
+# Configure, make and install filebench
+./configure
+make
+sudo make install
+
