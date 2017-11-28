@@ -6,6 +6,7 @@ docker pull base/archlinux
 cd /home/jia/Documents/Code/CS854/fall2017_cs854
 
 docker build -t jwu424/cs_854_fall2017 .
+docker push jwu424/cs_854_fall2017
 
 
 
