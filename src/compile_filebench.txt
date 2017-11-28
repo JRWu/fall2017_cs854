@@ -2,6 +2,7 @@
 docker run --privileged -it -v /home/jia/Documents/Code/CS854/fall2017_cs854:/data -v /:/host jwu424/cs_854_fall2017
 
 cd /data
+mkdir example
 
 # Configure it so the basic tools "make" etc are installed so filebench can be built
 pacman -Syu --debug
@@ -14,4 +15,14 @@ cd /data/filebench/filebench-1.5-alpha3
 ./configure
 make
 sudo make install
+
+
+
+# Copy an example to an example directory
+cd /data
+cp filebench/filebench-1.5-alpha3/workloads/createfiles.f example/ 
+cd /data/example
+
+# Fixes the starting instance hang bug
+echo 0 > /proc/sys/kernel/randomize_va_space
 
