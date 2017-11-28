@@ -23,7 +23,7 @@
 # Use is subject to license terms.
 #
 
-set $dir=/tmp
+set $dir=/data/tmp
 set $nfiles=1000
 set $meandirwidth=20
 set $filesize=cvar(type=cvar-gamma,parameters=mean:16384;gamma:1.5)
@@ -74,4 +74,4 @@ define process name=filereader,instances=1
 
 echo  "Web-server Version 3.1 personality successfully loaded"
 
-run 60
+run 10
