@@ -84,4 +84,4 @@ define process name=shadow,instances=$nshadows
 
 echo "OLTP Version 3.0  personality successfully loaded"
 
-run 10
+run 300

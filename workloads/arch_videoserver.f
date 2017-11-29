@@ -33,7 +33,7 @@
 # 10 seconds. Thus the write bandwidth will be set as $filesize/$repintval.
 #
 
-set $dir=/data/tmp
+set $dir=/home/j2zhao/Documents/fall2017_cs854/tmp
 set $eventrate=96
 set $filesize=100m
 set $nthreads=48

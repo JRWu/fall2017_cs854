@@ -23,7 +23,7 @@
 # Use is subject to license terms.
 #
 
-set $dir=/data/tmp
+set $dir=/home/j2zhao/Documents/fall2017_cs854/tmp
 set $nfiles=10000
 set $meandirwidth=1000000
 set $meanfilesize=16k

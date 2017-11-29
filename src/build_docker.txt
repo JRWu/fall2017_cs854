@@ -12,3 +12,11 @@ docker push jwu424/cs_854_fall2017
 
 # Enter Container
 docker run --privileged -it -v /home/jia/Documents/Code/CS854/fall2017_cs854:/data -v /:/host jwu424/cs_854_fall2017
+
+
+
+# Zip folder
+tar -zcvf fall2017_cs854.tar.gz fall2017_cs854/
+
+# Unzip Folder
+tar -zxvf fall2017_cs854.tar.gz
