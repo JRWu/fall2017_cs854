@@ -1,0 +1,12 @@
+statfile1            96753ops      322ops/s   0.0mb/s      0.1ms/op [0.00ms - 893.27ms]
+deletefile1          96753ops      322ops/s   0.0mb/s      3.3ms/op [0.02ms - 2298.00ms]
+closefile3           96753ops      322ops/s   0.0mb/s      0.0ms/op [0.00ms -  1.00ms]
+readfile1            96753ops      322ops/s  42.5mb/s      0.3ms/op [0.00ms - 959.72ms]
+openfile2            96753ops      322ops/s   0.0mb/s      0.0ms/op [0.00ms - 903.89ms]
+closefile2           96753ops      322ops/s   0.0mb/s      0.0ms/op [0.00ms -  1.00ms]
+appendfilerand1      96753ops      322ops/s   2.5mb/s     10.4ms/op [0.00ms - 942.76ms]
+openfile1            96754ops      322ops/s   0.0mb/s      0.1ms/op [0.00ms - 750.49ms]
+closefile1           96754ops      322ops/s   0.0mb/s      0.0ms/op [0.00ms - 13.49ms]
+wrtfile1             96754ops      322ops/s  40.0mb/s    133.0ms/op [0.01ms - 1457.85ms]
+createfile1          96803ops      323ops/s   0.0mb/s      2.6ms/op [0.01ms - 779.77ms]
+311.072: IO Summary: 1064336 ops 3547.237 ops/s 322/645 rd/wr  85.0mb/s  50.0ms/op

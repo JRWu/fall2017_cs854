@@ -62,9 +62,13 @@ In this paper, we attempt to profile the performance of three separate filesyste
 \section{Introduction}
 Filesystems are the implementation of specific rules and principles governing how data is stored and retrieved on storage medium. At the time of writing, there are multiple various filesystems supported on the Linux operating system including ext4, reiserfs, xfs and many more. These filesystems all contain central concepts such as blocks and inodes, but differ subtly in their implementations (cite the linux documentation project here http://www.tldp.org/LDP/sag/html/filesystems.html).
 
-Containers, also known as standardized units of software, are executables built ontop of a kernel. These containers offer a standardized execution environment agnostic to the environment the container is installed on. In this paper, we chose to examine Docker, a popular and free platform for creating and running containers. Docker has been championed by researchers as a platform which allows for reproducible research (cite https://arxiv.org/pdf/1410.0846.pdf).
-We are interested in researching whether or not container based filesystem operations incur a significant performance overhead relative to native filesystem operations.
+Containers, also known as standardized units of software, are executables built ontop of a kernel. These containers offer a standardized execution environment agnostic to the environment the container is installed on. In this paper, we chose to examine Docker, a popular and free platform for creating and running containers. Docker has been championed by researchers as a platform which allows for reproducible research (cite https://arxiv.org/pdf/1410.0846.pdf). We are interested in researching whether or not container based filesystem operations incur a significant performance overhead relative to native filesystem operations.
 
+We make the following contributions:
+\begin{itemize}
+  \item A comparison of ext4, reiserfs and xfs filesystems using Filebench and IOzone.
+  \item An investigation of filesystem performance in containers versus native linux.
+\end{itemize}
 
 \section{Methods}
 
@@ -72,7 +76,7 @@ We are interested in researching whether or not container based filesystem opera
 Jason Add Description of Your Computer Here
 
 \subsection{Docker}
-
+Docker version 17.06.2-ce, API version 1.3, Go version go1.8.3, and git commit cec0b72 were used in this project. The base container was pulled from base/archlinux. All relevant code to regenerate the docker container and environment can be found in Section \ref{Availability}.
 
 \subsection{Benchmarks}
 Filebench, a popular filesystem and storage benchmark for I/O profiling is used to profile our three filesystems, as it permits custom and scalable workloads. We utilized five workloads which shipped with Filebench: FILESERVER, VARMAIL, VIDEOSERVER, WEBPROXY and WEBSERVER. Each of these benchmarks were called 5 times after a fresh installation of the filesystem. Temporary files were discarded with "rm -rf" after each benchmark prior to running the next benchmark to clear the cache. The runtime of Filebench benchmarks were fixed at 300 seconds with the exception of WEBPROXY. Unless explicitly mentioned, the benchmarks use the predefined settings given by the authors\endnote{The predefined settings can be located here: https://github.com/filebench/filebench/wiki/Predefined-personalities}. This was to mitigate any ramp-up effects that might occur with our HDD. We had to disable address space layout randomization by setting randomize\_va\_space=0 in /proc/sys/kernel so that Filebench would execute properly and give consistent results.
@@ -92,18 +96,25 @@ WEBPROXY simulated I/O on a web proxy server. Multiple files were created, writt
 \subsubsection{WEBSERVER}
 This benchmark is similar to WEBPROXY, however it runs open-read-close operations on files in a directory tree and has an additional step of appending. 
 
-
-
 \section{Results}
+\subsection{Filebench}
+In Filebench, 
 
 
-\begin{figure}[!h]
+
+\begin{figure}[!ht]
 \centering
-\includegraphics[width=3in]{../results/fs_benchmark_arch.png}
-\caption{Native FileSystem Performance per Workload}
-\label{fig:arch_workload_boxplots}
+\includegraphics[width=3in]{../results/dock_workload_boxplots.png}
+\caption{Docker Filebench performance per workload}
+\label{fig:dock_workload_boxplots}
 \end{figure}
 
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=3in]{../results/dock_summarized_performance.png}
+\caption{Summarized workload performance within Docker}
+\label{fig:dock_summarized_performance}
+\end{figure}
 
 \section{Discussion}
 \subsection{Threats To Validity}
@@ -115,7 +126,7 @@ before we wrap it up.
 A polite author always includes acknowledgments.  Thank everyone,
 especially those who funded the work. 
 
-\section{Availability}
+\section{Availability}\label{Availability}
 All relevant scripts and data can be retireved from the following repository:
 \begin{center}
 {\tt https://github.com/JRWu/fall2017\_cs854/\~{}myname/SWIG}

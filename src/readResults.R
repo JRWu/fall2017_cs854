@@ -72,13 +72,13 @@ for (f in 1:length(filesystems))
 	}
 }
 
-
+shps <- c(0:4)
 maincex <- 2
 labcex <- 1.5
 
 ##### Plotting Work  #####
 plotcolours <- c("red","blue","green","yellow","black")
-png(file="results/dock_workload_boxplots.png", 1000,1000)
+png(file="results/dock_workload_boxplots.png", 600,600)
 par(mfrow=c(3,2))
 # Individual Plots
 for (w in 1:length(workloads))
@@ -93,16 +93,19 @@ for (w in 1:length(workloads))
 	axis(1, at=1:length(filesystems), labels=filesystems, cex.axis=2)
 
 }
+dev.off()
 
 
+png(file="results/dock_summarized_performance.png",600,600)
 ymax <- max(as.numeric(unlist(avg.dock.list.workloads)))
 ymin <- min(as.numeric(unlist(avg.dock.list.workloads)))
 
 
 df <- avg.dock.list.workloads
-plot(as.numeric(df[1,]), ylim=c(ymin,ymax), xaxt="n", pch=shps[1], col=plotcolours[1], xlim=c(1,length(workloads)), main="Relative Performance",xlab="", cex.main=maincex, cex.lab=labcex, cex=maincex, ylab="Throughput (mb/s)")
+plot(as.numeric(df[1,]), ylim=c(ymin,ymax), xaxt="n", pch=shps[1], col=plotcolours[1], xlim=c(1,length(workloads)), main="",xlab="", cex.main=maincex, cex.lab=labcex, cex=maincex, ylab="Throughput (mb/s)")
 lines(as.numeric(df[1,]), col=plotcolours[1])
-axis(1, at=1:length(workloads), labels=workloads, cex.axis=labcex-0.1)
+axis(1, at=1:length(workloads), labels=workloads, cex.axis=labcex-0.5)
+legend(1,1500, legend=filesystems, col=plotcolours[1:3], pch=shps[1:3], cex=maincex)
 
 for (w in 2:length(workloads))
 {
@@ -111,3 +114,4 @@ for (w in 2:length(workloads))
 	lines(as.numeric(df[w,]), col=plotcolours[w])
 }
 dev.off()
+

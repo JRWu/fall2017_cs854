@@ -1,0 +1,28 @@
+Filebench Version 1.5-alpha3
+0.000: Allocated 173MB of shared memory
+0.002: Video Server Version 3.0 personality successfully loaded
+0.002: Populating and pre-allocating filesets
+0.003: passivevids populated: 194 files, avg. dir. width = 20, avg. dir. depth = 1.8, 0 leafdirs, 19400.000MB total size
+0.003: Removing passivevids tree (if exists)
+3.055: Pre-allocating directories in passivevids tree
+3.056: Pre-allocating files in passivevids tree
+221.779: activevids populated: 32 files, avg. dir. width = 4, avg. dir. depth = 2.5, 0 leafdirs, 3200.000MB total size
+221.800: Removing activevids tree (if exists)
+223.414: Pre-allocating directories in activevids tree
+223.415: Pre-allocating files in activevids tree
+288.807: Waiting for pre-allocation to finish (in case of a parallel pre-allocation)
+305.636: Population and pre-allocation of filesets completed
+305.681: Starting 1 vidreaders instances
+305.697: Starting 1 vidwriter instances
+307.063: Running...
+607.110: Run took 300 seconds...
+607.631: Per-Operation Breakdown
+serverlimit          115317ops      384ops/s   0.0mb/s    114.0ms/op [0.00ms - 5232.56ms]
+vidreader            115460ops      385ops/s  95.9mb/s     35.1ms/op [0.00ms - 3090.78ms]
+replaceinterval      27ops        0ops/s   0.0mb/s  10000.2ms/op [10000.07ms - 10000.19ms]
+wrtclose             28ops        0ops/s   0.0mb/s      0.0ms/op [0.01ms -  0.10ms]
+newvid               28ops        0ops/s   9.3mb/s    741.8ms/op [267.54ms - 7613.35ms]
+wrtopen              28ops        0ops/s   0.0mb/s      0.1ms/op [0.06ms -  0.22ms]
+vidremover           28ops        0ops/s   0.0mb/s    130.3ms/op [23.81ms - 2453.26ms]
+607.631: IO Summary: 115572 ops 384.975 ops/s 385/0 rd/wr 105.2mb/s  35.3ms/op
+607.631: Shutting down processes

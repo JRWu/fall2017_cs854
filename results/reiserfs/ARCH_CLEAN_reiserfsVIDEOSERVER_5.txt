@@ -1,0 +1,8 @@
+serverlimit          37896ops      125ops/s   0.0mb/s    290.2ms/op [0.00ms - 47850.49ms]
+vidreader            38028ops      126ops/s  31.3mb/s    381.3ms/op [0.00ms - 48986.46ms]
+replaceinterval      6ops        0ops/s   0.0mb/s  10000.2ms/op [10000.10ms - 10000.19ms]
+wrtclose             6ops        0ops/s   0.0mb/s      0.0ms/op [0.01ms -  0.02ms]
+newvid               6ops        0ops/s   2.0mb/s  33933.6ms/op [1718.72ms - 87877.56ms]
+wrtopen              7ops        0ops/s   0.0mb/s      0.8ms/op [0.08ms -  4.73ms]
+vidremover           7ops        0ops/s   0.0mb/s     35.9ms/op [26.90ms - 60.77ms]
+611.555: IO Summary: 38054 ops 125.594 ops/s 126/0 rd/wr  33.3mb/s 386.6ms/op
