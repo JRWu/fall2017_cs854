@@ -78,13 +78,13 @@ labcex <- 1.5
 
 ##### Plotting Work  #####
 plotcolours <- c("red","blue","green","yellow","black")
-png(file="results/dock_workload_boxplots.png", 600,600)
+png(file="results/arch_workload_boxplots.png", 600,600)
 par(mfrow=c(3,2))
 # Individual Plots
 for (w in 1:length(workloads))
 {
 
-	df <- dock.list.workloads[[workloads[w]]]
+	df <- arch.list.workloads[[workloads[w]]]
 	d.df <- reshape(df, direction="long", varying=list(1:5))
 	colnames(d.df) <- c("fs","mbps","id")
 	d.df$mbps <- as.numeric(d.df$mbps)
@@ -96,12 +96,12 @@ for (w in 1:length(workloads))
 dev.off()
 
 
-png(file="results/dock_summarized_performance.png",600,600)
-ymax <- max(as.numeric(unlist(avg.dock.list.workloads)))
-ymin <- min(as.numeric(unlist(avg.dock.list.workloads)))
+png(file="results/arch_summarized_performance.png",600,600)
+ymax <- max(as.numeric(unlist(avg.arch.list.workloads)))
+ymin <- min(as.numeric(unlist(avg.arch.list.workloads)))
 
 
-df <- avg.dock.list.workloads
+df <- avg.arch.list.workloads
 plot(as.numeric(df[1,]), ylim=c(ymin,ymax), xaxt="n", pch=shps[1], col=plotcolours[1], xlim=c(1,length(workloads)), main="",xlab="", cex.main=maincex, cex.lab=labcex, cex=maincex, ylab="Throughput (mb/s)")
 lines(as.numeric(df[1,]), col=plotcolours[1])
 axis(1, at=1:length(workloads), labels=workloads, cex.axis=labcex-0.5)
@@ -109,8 +109,31 @@ legend(1,1500, legend=filesystems, col=plotcolours[1:3], pch=shps[1:3], cex=main
 
 for (w in 2:length(workloads))
 {
-	df <- avg.dock.list.workloads
-	points(as.numeric(df[w,]), ylim=c(ymin,ymax), xaxt="n", pch=shps[w], col=plotcolours[w], xlim=c(1,length(workloads)), cex=maincex)
+	df <- avg.arch.list.workloads
+	points(as.numeric(df[w,]), ylim=c(ymin,ymax), xaxt="n", pch=shps[w], col=plotcolours[w], xlim=c(1,length(workloads)), cex=maincex, cex.lab=labcex)
+	lines(as.numeric(df[w,]), col=plotcolours[w])
+}
+dev.off()
+
+
+# Relative Graphs
+png(file="results/dock_relative_performance.png",600,600)
+
+df <- avg.dock.list.workloads
+df[3,] <- df[3,]/df[1,]
+df[2,] <- df[2,]/df[1,]
+df[1,] <- df[1,]/df[1,]
+
+ymax <- max(as.numeric(unlist(df)))
+ymin <- min(as.numeric(unlist(df)))
+
+plot(as.numeric(df[1,]), ylim=c(ymin,ymax), xaxt="n", pch=shps[1], col=plotcolours[1], xlim=c(1,length(workloads)), main="",xlab="", cex.main=maincex, cex.lab=labcex, cex=maincex, ylab="Relative Throughput (mb/s)")
+lines(as.numeric(df[1,]), col=plotcolours[1])
+axis(1, at=1:length(workloads), labels=workloads, cex.axis=labcex-0.5)
+
+for (w in 2:length(workloads))
+{
+	points(as.numeric(df[w,]), ylim=c(ymin,ymax), xaxt="n", pch=shps[w], col=plotcolours[w], xlim=c(1,length(workloads)), cex=maincex, cex.lab=labcex)
 	lines(as.numeric(df[w,]), col=plotcolours[w])
 }
 dev.off()

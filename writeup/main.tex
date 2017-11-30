@@ -79,7 +79,9 @@ Jason Add Description of Your Computer Here
 Docker version 17.06.2-ce, API version 1.3, Go version go1.8.3, and git commit cec0b72 were used in this project. The base container was pulled from base/archlinux. All relevant code to regenerate the docker container and environment can be found in Section \ref{Availability}.
 
 \subsection{Benchmarks}
-Filebench, a popular filesystem and storage benchmark for I/O profiling is used to profile our three filesystems, as it permits custom and scalable workloads. We utilized five workloads which shipped with Filebench: FILESERVER, VARMAIL, VIDEOSERVER, WEBPROXY and WEBSERVER. Each of these benchmarks were called 5 times after a fresh installation of the filesystem. Temporary files were discarded with "rm -rf" after each benchmark prior to running the next benchmark to clear the cache. The runtime of Filebench benchmarks were fixed at 300 seconds with the exception of WEBPROXY. Unless explicitly mentioned, the benchmarks use the predefined settings given by the authors\endnote{The predefined settings can be located here: https://github.com/filebench/filebench/wiki/Predefined-personalities}. This was to mitigate any ramp-up effects that might occur with our HDD. We had to disable address space layout randomization by setting randomize\_va\_space=0 in /proc/sys/kernel so that Filebench would execute properly and give consistent results.
+Filebench, a popular filesystem and storage benchmark for I/O profiling is used to profile our three filesystems, as it permits custom and scalable workloads. We utilized five workloads which shipped with Filebench: FILESERVER, VARMAIL, VIDEOSERVER, WEBPROXY and WEBSERVER. 
+
+Each of these benchmarks were called 5 times after a fresh installation of the filesystem. Temporary files were discarded with "rm -rf" after each benchmark prior to running the next benchmark to clear the cache. The runtime of Filebench benchmarks were fixed at 300 seconds with the exception of WEBPROXY which was fixed at 60 seconds. Unless explicitly mentioned, the benchmarks use the predefined settings given by the authors\endnote{The predefined settings can be located here: https://github.com/filebench/filebench/wiki/Predefined-personalities}. This was to mitigate any ramp-up effects that might occur with our HDD. We had to disable address space layout randomization by setting randomize\_va\_space=0 in /proc/sys/kernel so that Filebench would execute properly and give consistent results.
 
 \subsubsection{FILESERVER}
 This workload creates a directory tree, and calls a sequence of creates, deletes, appends, reads and writes on various files. The authors of Filebench describe this workload as being similar to SPECsfs. We configured the FILESERVER workload to output files of 1.2GB in size, with one flow for each stat, delete, read, close, append, open, close, write, and create operations.
@@ -98,28 +100,47 @@ This benchmark is similar to WEBPROXY, however it runs open-read-close operation
 
 \section{Results}
 \subsection{Filebench}
-In Filebench, 
+Figures \ref{fig:arch_workload_boxplots} \& \ref{fig:dock_workload_boxplots} both depict the results Filebench workloasd on each filesystem. Figures \ref{fig:arch_relative_performance} \& \ref{fig:dock_relative_performance} are relative performance graphs of ext4, reiserfs and xfs on Arch Linux and Docker respectively. As illustrated by these figures, ext4 outperforms reiserfs across the board, and outperforms xfs with the exception of the WEBSERVER benchmark. 
 
+When examining the performance of Filebench benchmarks in the Docker container, the conclusions are identical for ext4. When comparing reiserfs and xfs however, there are some subtle differences. The VARMAIL and VIDEOSERVER benchmarks are much more close in terms of performance.
 
 
 \begin{figure}[!ht]
 \centering
+\includegraphics[width=3in]{../results/arch_workload_boxplots.png}
+\caption{Native Filebench performance per workload.}
+\label{fig:arch_workload_boxplots}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
 \includegraphics[width=3in]{../results/dock_workload_boxplots.png}
-\caption{Docker Filebench performance per workload}
+\caption{Docker Filebench performance per workload.}
 \label{fig:dock_workload_boxplots}
 \end{figure}
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=3in]{../results/dock_summarized_performance.png}
-\caption{Summarized workload performance within Docker}
-\label{fig:dock_summarized_performance}
+\includegraphics[width=3in]{../results/arch_relative_performance.png}
+\caption{Relative workload performance on native Arch Linux. Red squares are ext4, blue circles are reiserfs and green triangles are xfs. Throughput is scaled to ext4. Higher numbers mean higher performance.}
+\label{fig:arch_relative_performance}
 \end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=3in]{../results/dock_relative_performance.png}
+\caption{Relative workload performance within Docker. Red squares are ext4, blue circles are reiserfs and green triangles are xfs. Throughput is scaled to ext4. Higher numbers mean higher performance.}
+\label{fig:dock_relative_performance}
+\end{figure}
+
+
 
 \section{Discussion}
 \subsection{Threats To Validity}
-Well, it's getting boring isn't it.  This is the last subsection
-before we wrap it up.
+Filebench is not fully representative of a filesystem's performance. Filebench primarily evaluates the I/O performance of a disk, and is not tuned to evaluate caching and metadata dimensions of a disk. (cite https://www.eecs.harvard.edu/margo/papers/hotos11-fsbench/paper.pdf) 
+
+
+
 
 \section{Acknowledgments}
 
