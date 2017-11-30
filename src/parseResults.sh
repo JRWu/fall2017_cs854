@@ -1,8 +1,14 @@
 #!/bin/bash
 
+if [ $# -lt 2 ]; then
+	echo "Usage: ./src/parseResults.sh `DOCKER_ or ARCH_` `FILESYSTEM` "
+	echo "Usage: ./src/parseResults.sh `DOCKER_` `ext4` "
+	exit
+fi
+
 # DEFINE DIRECTORIES
-RESULTSDIR="/data/results/"
-DOCKER="DOCKER_"
+RESULTSDIR="results/"$2"/"
+DOCKER=$1
 WEBSERVER="WEBSERVER_"
 FILESERVER="FILESERVER_"
 VARMAIL="VARMAIL_"
@@ -11,9 +17,15 @@ WEBPROXY="WEBPROXY_"
 VIDEOSERVER="VIDEOSERVER_"
 CLEAN="CLEAN_"
 EXT=".txt"
-XYZ=`df -TH | grep "^/dev"`
-FS=`./src/determineFS.sh $XYZ`
+FS=$2
 
+#tail $RESULTSDIR$DOCKER$FS$WEBSERVER"1"$EXT
+
+# Script run with:
+# ./src/parseResults.sh "ARCH_" "ext4"
+# ./src/parseResults.sh "DOCKER_" "ext4"
+# ./src/parseResults.sh "ARCH_" "reiserfs"
+# ./src/parseResults.sh "DOCKER_" "reiserfs"
 
 for i in `seq 1 5`
 do
@@ -31,5 +43,4 @@ do
 
 	tail -n +20 $RESULTSDIR$DOCKER$FS$VIDEOSERVER$i$EXT | head -n -1 > $RESULTSDIR$DOCKER$CLEAN$FS$VIDEOSERVER$i$EXT
 	
-
 done
