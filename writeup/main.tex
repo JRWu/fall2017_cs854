@@ -54,125 +54,59 @@ University of Waterloo
 Your Abstract Text Goes Here.  Just a few facts.
 Whet our appetites.
 
+Container as a Service (CaaS) platforms are being offered to personal and enterprise applications,  
+In this paper, we attempt to profile the performance of three separate filesystems, ext4, reiserfs, and xfs running ontop of Arch Linux.
+
+
+
 \section{Introduction}
+Filesystems are the implementation of specific rules and principles governing how data is stored and retrieved on storage medium. At the time of writing, there are multiple various filesystems supported on the Linux operating system including ext4, reiserfs, xfs and many more. These filesystems all contain central concepts such as blocks and inodes, but differ subtly in their implementations (cite the linux documentation project here http://www.tldp.org/LDP/sag/html/filesystems.html).
 
-A paragraph of text goes here.  Lots of text.  Plenty of interesting
-text. \\
+Containers, also known as standardized units of software, are executables built ontop of a kernel. These containers offer a standardized execution environment agnostic to the environment the container is installed on. In this paper, we chose to examine Docker, a popular and free platform for creating and running containers. Docker has been championed by researchers as a platform which allows for reproducible research (cite https://arxiv.org/pdf/1410.0846.pdf).
+We are interested in researching whether or not container based filesystem operations incur a significant performance overhead relative to native filesystem operations.
 
-More fascinating text. Features\endnote{Remember to use endnotes, not footnotes!} galore, plethora of promises.\\
 
-\section{This is Another Section}
+\section{Methods}
 
-Some embedded literal typset code might 
-look like the following :
+\subsection{Environment}
+Jason Add Description of Your Computer Here
 
-{\tt \small
-\begin{verbatim}
-int wrap_fact(ClientData clientData,
-              Tcl_Interp *interp,
-              int argc, char *argv[]) {
-    int result;
-    int arg0;
-    if (argc != 2) {
-        interp->result = "wrong # args";
-        return TCL_ERROR;
-    }
-    arg0 = atoi(argv[1]);
-    result = fact(arg0);
-    sprintf(interp->result,"%d",result);
-    return TCL_OK;
-}
-\end{verbatim}
-}
+\subsection{Docker}
 
-Now we're going to cite somebody.  Watch for the cite tag.
-Here it comes~\cite{Chaum1981,Diffie1976}.  The tilde character (\~{})
-in the source means a non-breaking space.  This way, your reference will
-always be attached to the word that preceded it, instead of going to the
-next line.
 
-\section{This Section has SubSections}
-\subsection{First SubSection}
+\subsection{Benchmarks}
+Filebench, a popular filesystem and storage benchmark for I/O profiling is used to profile our three filesystems, as it permits custom and scalable workloads. We utilized five workloads which shipped with Filebench: FILESERVER, VARMAIL, VIDEOSERVER, WEBPROXY and WEBSERVER. Each of these benchmarks were called 5 times after a fresh installation of the filesystem. Temporary files were discarded with "rm -rf" after each benchmark prior to running the next benchmark to clear the cache. The runtime of Filebench benchmarks were fixed at 300 seconds with the exception of WEBPROXY. Unless explicitly mentioned, the benchmarks use the predefined settings given by the authors\endnote{The predefined settings can be located here: https://github.com/filebench/filebench/wiki/Predefined-personalities}. This was to mitigate any ramp-up effects that might occur with our HDD. We had to disable address space layout randomization by setting randomize\_va\_space=0 in /proc/sys/kernel so that Filebench would execute properly and give consistent results.
 
-Here's a typical figure reference.  The figure is centered at the
-top of the column.  It's scaled.  It's explicitly placed.  You'll
-have to tweak the numbers to get what you want.\\
+\subsubsection{FILESERVER}
+This workload creates a directory tree, and calls a sequence of creates, deletes, appends, reads and writes on various files. The authors of Filebench describe this workload as being similar to SPECsfs. We configured the FILESERVER workload to output files of 1.2GB in size, with one flow for each stat, delete, read, close, append, open, close, write, and create operations.
 
-% you can also use the wonderful epsfig package...
-\begin{figure}[t]
-\begin{center}
-\begin{picture}(300,150)(0,200)
-\put(-15,-30){\special{psfile = fig1.ps hscale = 50 vscale = 50}}
-\end{picture}\\
-\end{center}
-\caption{Wonderful Flowchart}
+\subsubsection{VARMAIL}
+In this benchmark, multiple operations of create-append-sync, read-append-sync, read and delete are run in a single directory. The purpose of these operations are to simulate I/O operations on a mail server. 
+
+\subsubsection{VIDEOSERVER}
+This workload simulates a videoserver by serving video files from one directory and caching videos in a second directory. Videos were configured to be 3.2GB in size.
+
+\subsubsection{WEBPROXY}
+WEBPROXY simulated I/O on a web proxy server. Multiple files were created, written to, closed, and deleted in parallel. This benchmark was configured to run only for 60 seconds as 300 seconds would cause a segfault. The authors of Filebench are aware of this issue on Github.
+
+\subsubsection{WEBSERVER}
+This benchmark is similar to WEBPROXY, however it runs open-read-close operations on files in a directory tree and has an additional step of appending. 
+
+
+
+\section{Results}
+
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=3in]{../results/fs_benchmark_arch.png}
+\caption{Native FileSystem Performance per Workload}
+\label{fig:arch_workload_boxplots}
 \end{figure}
 
-This text came after the figure, so we'll casually refer to Figure 1
-as we go on our merry way.
 
-\subsection{New Subsection}
-
-It can get tricky typesetting Tcl and C code in LaTeX because they share
-a lot of mystical feelings about certain magic characters.  You
-will have to do a lot of escaping to typeset curly braces and percent
-signs, for example, like this:
-``The {\tt \%module} directive
-sets the name of the initialization function.  This is optional, but is
-recommended if building a Tcl 7.5 module.
-Everything inside the {\tt \%\{, \%\}}
-block is copied directly into the output. allowing the inclusion of
-header files and additional C code." \\
-
-Sometimes you want to really call attention to a piece of text.  You
-can center it in the column like this:
-\begin{center}
-{\tt \_1008e614\_Vector\_p}
-\end{center}
-and people will really notice it.\\
-
-\noindent
-The noindent at the start of this paragraph makes it clear that it's
-a continuation of the preceding text, not a new para in its own right.
-
-
-Now this is an ingenious way to get a forced space.
-{\tt Real~$*$} and {\tt double~$*$} are equivalent. 
-
-Now here is another way to call attention to a line of code, but instead
-of centering it, we noindent and bold it.\\
-
-\noindent
-{\bf \tt size\_t : fread ptr size nobj stream } \\
-
-And here we have made an indented para like a definition tag (dt)
-in HTML.  You don't need a surrounding list macro pair.
-\begin{itemize}
-\item[]  {\tt fread} reads from {\tt stream} into the array {\tt ptr} at
-most {\tt nobj} objects of size {\tt size}.   {\tt fread} returns
-the number of objects read. 
-\end{itemize}
-This concludes the definitions tag.
-
-\subsection{How to Build Your Paper}
-
-You have to run {\tt latex} once to prepare your references for
-munging.  Then run {\tt bibtex} to build your bibliography metadata.
-Then run {\tt latex} twice to ensure all references have been resolved.
-If your source file is called {\tt usenixTemplate.tex} and your {\tt
-  bibtex} file is called {\tt usenixTemplate.bib}, here's what you do:
-{\tt \small
-\begin{verbatim}
-latex usenixTemplate
-bibtex usenixTemplate
-latex usenixTemplate
-latex usenixTemplate
-\end{verbatim}
-}
-
-
-\subsection{Last SubSection}
-
+\section{Discussion}
+\subsection{Threats To Validity}
 Well, it's getting boring isn't it.  This is the last subsection
 before we wrap it up.
 
@@ -182,26 +116,11 @@ A polite author always includes acknowledgments.  Thank everyone,
 especially those who funded the work. 
 
 \section{Availability}
-
-It's great when this section says that MyWonderfulApp is free software, 
-available via anonymous FTP from
-
+All relevant scripts and data can be retireved from the following repository:
 \begin{center}
-{\tt ftp.site.dom/pub/myname/Wonderful}\\
+{\tt https://github.com/JRWu/fall2017\_cs854/\~{}myname/SWIG}
 \end{center}
 
-Also, it's even greater when you can write that information is also 
-available on the Wonderful homepage at 
-
-\begin{center}
-{\tt http://www.site.dom/\~{}myname/SWIG}
-\end{center}
-
-Now we get serious and fill in those references.  Remember you will
-have to run latex twice on the document in order to resolve those
-cite tags you met earlier.  This is where they get resolved.
-We've preserved some real ones in addition to the template-speak.
-After the bibliography you are DONE.
 
 {\footnotesize \bibliographystyle{acm}
 \bibliography{../common/bibliography}}

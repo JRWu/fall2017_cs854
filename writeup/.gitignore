@@ -2,4 +2,4 @@
 *.ent
 *.log
 *.gz
-
+*.backup

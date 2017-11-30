@@ -78,7 +78,7 @@ labcex <- 1.5
 
 ##### Plotting Work  #####
 plotcolours <- c("red","blue","green","yellow","black")
-png(file="results/fs_benchmark_docker.png", 1000,1000)
+png(file="results/dock_workload_boxplots.png", 1000,1000)
 par(mfrow=c(3,2))
 # Individual Plots
 for (w in 1:length(workloads))
