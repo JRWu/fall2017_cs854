@@ -62,4 +62,4 @@ define process name=proxycache,instances=1
 
 echo  "Web proxy-server Version 3.0 personality successfully loaded"
 
-run 300
+run 60
