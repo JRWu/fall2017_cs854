@@ -4,7 +4,10 @@
 #
 # Dependencies:
 # install.packages("gridExtra")
+# install.packages("xtable")
+
 library(gridExtra)
+library(xtable)
 
 #webserver <- read.table("ext4WEBSERVER_1.txt", skip=19, sep="", nrow=length(readLines("ext4WEBSERVER_1.txt"))-2)
 #clean <- read.table("CLEAN_ext4WEBSERVER_1.txt", sep="", nrow=length(readLines("CLEAN_ext4WEBSERVER_1.txt"))-2, row.names=1)
@@ -117,9 +120,9 @@ dev.off()
 
 
 # Relative Graphs
-png(file="results/dock_relative_performance.png",600,600)
+png(file="results/arch_relative_performance.png",600,600)
 
-df <- avg.dock.list.workloads
+df <- avg.arch.list.workloads
 df[3,] <- df[3,]/df[1,]
 df[2,] <- df[2,]/df[1,]
 df[1,] <- df[1,]/df[1,]
@@ -127,7 +130,7 @@ df[1,] <- df[1,]/df[1,]
 ymax <- max(as.numeric(unlist(df)))
 ymin <- min(as.numeric(unlist(df)))
 
-plot(as.numeric(df[1,]), ylim=c(ymin,ymax), xaxt="n", pch=shps[1], col=plotcolours[1], xlim=c(1,length(workloads)), main="",xlab="", cex.main=maincex, cex.lab=labcex, cex=maincex, ylab="Relative Throughput (mb/s)")
+plot(as.numeric(df[1,]), ylim=c(ymin,ymax), xaxt="n", pch=shps[1], col=plotcolours[1], xlim=c(1,length(workloads)), main="",xlab="", cex.main=maincex, cex.lab=labcex, cex=maincex, ylab="Relative Throughput to ext4")
 lines(as.numeric(df[1,]), col=plotcolours[1])
 axis(1, at=1:length(workloads), labels=workloads, cex.axis=labcex-0.5)
 
@@ -138,3 +141,21 @@ for (w in 2:length(workloads))
 }
 dev.off()
 
+
+# Docker vs Native
+
+df.dock <- avg.dock.list.workloads
+df.arch <- avg.arch.list.workloads
+
+df.dock.scaled <- df.dock/df.arch
+df.arch.scaled <- df.arch/df.arch
+
+plot(as.numeric(df.arch.scaled[1,]), ylim=c(0,4), xaxt="n", pch=shps[1], col="white", xlim=c(1,length(workloads)), main="",xlab="", cex.main=maincex, cex.lab=labcex, cex=maincex, ylab="Docker Relative Throughput to Native")
+lines(as.numeric(df.arch.scaled[1,]), col="black")
+axis(1, at=1:length(workloads), labels=workloads, cex.axis=labcex-0.5)
+
+for (w in 1:length(filesystems))
+{
+	points(as.numeric(df.dock.scaled[w,]), ylim=c(ymin,ymax), xaxt="n", pch=shps[w], col=plotcolours[w], xlim=c(1,length(workloads)), cex=maincex, cex.lab=labcex)
+	lines(as.numeric(df.dock.scaled[w,]), col=plotcolours[w])
+}

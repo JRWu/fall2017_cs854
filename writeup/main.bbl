@@ -1,0 +1,17 @@
+\begin{thebibliography}{1}
+
+\bibitem{boettiger2015introduction}
+{\sc Boettiger, C.}
+\newblock An introduction to docker for reproducible research.
+\newblock {\em ACM SIGOPS Operating Systems Review 49}, 1 (2015), 71--79.
+
+\bibitem{TLDP}
+{\sc Project, T. L.~D.}
+\newblock The linux system administrators guide 5.10.filesystems.
+
+\bibitem{tarasov2011benchmarking}
+{\sc Tarasov, V., Bhanage, S., Zadok, E., and Seltzer, M.}
+\newblock Benchmarking file system benchmarking: It* is* rocket science.
+\newblock In {\em HotOS\/} (2011), vol.~13, pp.~1--5.
+
+\end{thebibliography}
