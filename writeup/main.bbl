@@ -1,5 +1,10 @@
 \begin{thebibliography}{1}
 
+\bibitem{anderson2015docker}
+{\sc Anderson, C.}
+\newblock Docker [software engineering].
+\newblock {\em IEEE Software 32}, 3 (2015), 102--c3.
+
 \bibitem{boettiger2015introduction}
 {\sc Boettiger, C.}
 \newblock An introduction to docker for reproducible research.
@@ -8,6 +13,12 @@
 \bibitem{TLDP}
 {\sc Project, T. L.~D.}
 \newblock The linux system administrators guide 5.10.filesystems.
+
+\bibitem{rad2017introduction}
+{\sc Rad, B.~B., Bhatti, H.~J., and Ahmadi, M.}
+\newblock An introduction to docker and analysis of its performance.
+\newblock {\em International Journal of Computer Science and Network Security
+  (IJCSNS) 17}, 3 (2017), 228.
 
 \bibitem{tarasov2011benchmarking}
 {\sc Tarasov, V., Bhanage, S., Zadok, E., and Seltzer, M.}

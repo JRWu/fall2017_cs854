@@ -28,7 +28,7 @@
 \date{}
 
 %make title bold and 14 pt font (Latex default is non-bold, 16 pt)
-\title{\Large \bf Containerized Filesystems : A Performance Investigation of Containers across Filesystems}
+\title{\Large \bf Containerized Filesystems: A Performance Investigation of Containers across Filesystems}
 
 %for single author (just remove % characters)
 \author{
@@ -63,7 +63,7 @@ We attempt to profile the performance of three separate filesystems, ext4, reise
 \section{Introduction}
 Filesystems are the implementation of specific rules and principles governing how data is stored and retrieved on storage medium. At the time of writing, there are multiple various filesystems supported on the Linux operating system including ext4, reiserfs, xfs and many more. These filesystems all contain central concepts such as blocks and inodes, but differ subtly in their implementations~\cite{TLDP}.
 
-Containers, also known as standardized units of software, are executables built ontop of a kernel. These containers offer a standardized execution environment agnostic to the environment the container is installed on. In this paper, we chose to examine Docker, a popular and free platform for creating and running containers. Docker has been championed by researchers as a platform which allows for reproducible research~\cite{boettiger2015introduction}. We are interested in researching whether or not container based filesystem operations incur a significant performance overhead relative to native filesystem operations.
+Containers, also known as standardized units of software, are executables built ontop of a kernel. These containers offer a standardized execution environment agnostic to the environment the container is installed on. In this paper, we chose to examine Docker, a popular and free platform for creating and running containers~\cite{anderson2015docker}~\cite{rad2017introduction}. Docker has been championed by researchers as a platform which allows for reproducible research~\cite{boettiger2015introduction}. We are interested in researching whether or not container based filesystem operations incur a significant performance overhead relative to native filesystem operations.
 
 We make the following contributions:
 \begin{itemize}
@@ -72,7 +72,8 @@ We make the following contributions:
 \end{itemize}
 
 \section{Methods}
-In this section, we discuss the setups of our experiments.
+In this section, we discuss the setups of our experiments. We do not attempt to re-invent the wheel by writing ad-hoc benchmarks. Instead, we leverage existing benchmarks such as Filebench and IOzone.
+
 \subsection{Environment}
 For this project, we were using Arch linux distribution, version 4.13.12-1-ARCH, running on a quad-core AMD A8-7600 Radeon R7 with 4 gigabytes
  of installed memory. The disk we were using was a WD 500GB, 7200rpm hard drive with 32MB cache. We chose Arch over other alternatives 
@@ -90,7 +91,7 @@ that common. What IOzone does on this command is that for each size from 64KB to
 files into chunks and perform the requests one after another. It also uses different chunk sizes from starting from 4KB up to the size of the file. 
 
 \subsection{Filebench}
-Filebench, a popular filesystem and storage benchmark for I/O profiling is used to profile our three filesystems, as it permits custom and scalable workloads. Unlike Iozone, Filebench can run workloads that mimic the real world situations.  We utilized five workloads which shipped with Filebench: FILESERVER, VARMAIL, VIDEOSERVER, WEBPROXY and WEBSERVER. 
+Filebench, a popular filesystem and storage benchmark for I/O profiling is used to profile our three filesystems, as it permits custom and scalable workloads. Unlike Iozone, Filebench can run workloads that mimic the real world situations.  We utilized five workloads which shipped with Filebench: FILESERVER, VARMAIL, VIDEOSERVER, WEBPROXY and WEBSERVER. All scripts were executed with sudo privileges. 
 
 Each of these benchmarks were called 5 times after a fresh installation of the filesystem. Workloads generate temporary files prior to execution. Temporary files were discarded with "rm -rf" after each benchmark prior to running the next benchmark to clear the cache. The runtime of Filebench benchmarks were fixed at 300 seconds with the exception of WEBPROXY which was fixed at 60 seconds. This was to mitigate any ramp-up effects that might occur with our HDD. We had to disable address space layout randomization by setting randomize\_va\_space=0 in /proc/sys/kernel so that Filebench would execute properly and give consistent results. Unless explicitly mentioned, the benchmarks use the predefined settings given by the authors\endnote{The predefined settings can be located here: https://github.com/filebench/filebench/wiki/Predefined-personalities}.
 
@@ -112,39 +113,57 @@ This benchmark is similar to WEBPROXY, however it runs open-read-close operation
 \section{Results}
 \subsection{Filebench}
 Figures \ref{fig:arch_workload_boxplots} \& \ref{fig:dock_workload_boxplots} both depict the results Filebench workloasd on each filesystem. Figures \ref{fig:arch_relative_performance} \& \ref{fig:dock_relative_performance} are relative performance graphs of ext4, reiserfs and xfs on Arch Linux and Docker respectively. As illustrated by these figures, ext4 outperforms reiserfs across the board, and outperforms xfs with the exception of the WEBSERVER benchmark. Since ext4 is the highest performing filesystem, results are scaled to it in the relative performance graphs. Values less than 1 mean that the throughput on those filesystems performed worse than on ext4. 
+\\
 
-When examining the performance of Filebench benchmarks in the Docker container, the conclusions are identical for ext4. When comparing reiserfs and xfs however, there are some interesting differences. The VARMAIL and VIDEOSERVER benchmarks are much more close in terms of performance. 
+\noindent\fbox{
+    \parbox{\columnwidth}{
+    	\centering
+        \textit{Filebench results suggest that in general, ext4 has a higher I/O throughput relative to reiserfs and xfs.}
+    }
+}
+\\\\
+
+When examining the performance of Filebench benchmarks in the Docker container, the conclusions are identical for ext4. When comparing reiserfs and xfs however, there are some interesting differences. The VARMAIL and VIDEOSERVER benchmarks are much more similar in terms of performance. In our experiments, we observed that some benchmarks actually ran better in the Docker environment versus native Arch Linux as highlighted by Table~\ref{tab:dock_relative_arch}. Section~\ref{Discussion} will discuss this phenomenon in detail. 
+\\
+
+\noindent\fbox{
+    \parbox{\columnwidth}{
+    	\centering
+        \textit{Filebench benchmarks perform more consistently within Docker than they do on native Arch Linux.}
+    }
+}
+\\
 
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=3in]{../results/arch_workload_boxplots.png}
-\caption{Native Filebench performance per workload.}
+\caption{\textit{Native Filebench performance per workload. Higher is better.}}
 \label{fig:arch_workload_boxplots}
 \end{figure}
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=3in]{../results/dock_workload_boxplots.png}
-\caption{Docker Filebench performance per workload.}
+\caption{\textit{Docker Filebench performance per workload. Higher is better.}}
 \label{fig:dock_workload_boxplots}
 \end{figure}
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=3in]{../results/arch_relative_performance.png}
-\caption{Relative workload performance on native Arch Linux. Red squares are ext4, blue circles are reiserfs and green triangles are xfs. Throughput is scaled to ext4. Higher numbers mean higher throughput relative to ext4.}
+\caption{\textit{Relative workload performance on native Arch Linux. Red squares are ext4, blue circles are reiserfs and green triangles are xfs. Throughput is scaled to ext4. Higher numbers mean higher throughput relative to ext4.}}
 \label{fig:arch_relative_performance}
 \end{figure}
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=3in]{../results/dock_relative_performance.png}
-\caption{Relative workload performance within Docker. Red squares are ext4, blue circles are reiserfs and green triangles are xfs. Throughput is scaled to ext4. Higher numbers mean higher throughput relative to ext4.}
+\caption{\textit{Relative workload performance within Docker. Red squares are ext4, blue circles are reiserfs and green triangles are xfs. Throughput is scaled to ext4. Higher numbers mean higher throughput relative to ext4.}}
 \label{fig:dock_relative_performance}
 \end{figure}
 
-\begin{table}[ht]
+\begin{table}[!ht]
 \centering
 \begin{tabular}{rrrr}
   \hline
@@ -157,15 +176,20 @@ FILESERVER & 1.01 & 0.95 & 1.29 \\
   WEBSERVER & 0.96 & 0.95 & 0.99 \\ 
    \hline
 \end{tabular}
-\caption{Benchmark results on Docker scaled to native Arch Linux. Lower values mean Docker benchmarks performed worse.}
+\caption{\textit{Benchmark results on Docker scaled to native Arch Linux. Lower values mean benchmarks performed worse on Docker. Higher values mean benchmarks performed better on Docker.}}
 \label{tab:dock_relative_arch}
 \end{table}
 
 
-\section{Discussion}
+\section{Discussion}\label{Discussion}
 \subsection{Threats To Validity}
-Filebench is not fully representative of a filesystem's performance. Filebench primarily evaluates the I/O performance of a disk, and is not tuned to evaluate the caching and metadata dimensions of a disk~\cite{tarasov2011benchmarking}. We observed a peculiarity in our results, such as how VARMAIL and VIDEOSERVER results differ greatly in our Arch Linux environment, but are very similar in the Docker environment. This suggests that there is some factor affecting our results. Thus, we refrain from making absolute claims that one filesystem is better than another, and only provide suggestions. 
+Filebench is not fully representative of a filesystem's performance. Filebench primarily evaluates the I/O performance of a disk, and is not tuned to evaluate the caching and metadata dimensions of a disk~\cite{tarasov2011benchmarking}. Workloads specified in the benchmarks used the default values that shipped with Filebench, and were not tweaked. These could have been adjusted to better reflect the capability of our server. 
+We observed a peculiarity in our results, such as how VARMAIL and VIDEOSERVER results differ greatly in our Arch Linux environment, but are very similar in the Docker environment. Table~\ref{tab:dock_relative_arch} depicts the benchmark results of Docker scaled to native Arch Linux. Surprisingly, there are five benchmarks that run better in the Docker container than in native Arch Linux. These benchmarks are FILESERVER-ext4, FILESERVER-xfs, VIDEOSERVER-reiserfs, VIDEOSERVER-xfs, and WEBPROXY-xfs. These results are surprising as execution in a container should not outperform execution on the host machine. One reason why Docker results may be better than native Arch Linux is because of the isolation of the execution environment within Docker. Both scripts were run in privileged mode, however there could be some interference from other system processes during the native execution. This suggests that there is some unknown factor affecting our results. Thus, we refrain from making absolute claims that one filesystem is better than another, and only provide suggestions. Additionally, due to this discrepancy in execution between native Arch Linux and Docker, we do not perform any statistical tests comparing the performance difference of host execution vs container execution. 
 
+\section{Future Work}
+Future work includes tuning the default Filebench workloads in order to stress our hardware with a representative workload. We only examined one dimension of filesytems, I/O performance, yet there are multiple others such as the on-disk performance, caching performance and even metadata performance. Inclusion of other benchmarking software could allow us to make more concrete claims about filesystems in general and their differences.
+
+This study could be repeated with the inclusion of other filsystems. 
 
 \section{Acknowledgments}
 We thank Dr. Tim Brecht for providing guidance about the project such as recommending papers relevant to benchmarking filesystems. 
