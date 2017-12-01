@@ -4,46 +4,46 @@ The top-level auxiliary file: main.aux
 The style file: acm.bst
 Database file #1: bibliography.bib
 Warning--entry type for "TLDP" isn't style-file defined
---line 22 of file bibliography.bib
-You've used 3 entries,
+--line 44 of file bibliography.bib
+You've used 5 entries,
             2253 wiz_defined-function locations,
-            546 strings with 4285 characters,
-and the built_in function-call counts, 932 in all, are:
-= -- 86
-> -- 36
+            561 strings with 4658 characters,
+and the built_in function-call counts, 1522 in all, are:
+= -- 144
+> -- 60
 < -- 0
-+ -- 17
-- -- 12
-* -- 65
-:= -- 150
-add.period$ -- 8
-call.type$ -- 3
-change.case$ -- 15
++ -- 28
+- -- 20
+* -- 117
+:= -- 248
+add.period$ -- 14
+call.type$ -- 5
+change.case$ -- 25
 chr.to.int$ -- 0
-cite$ -- 3
-duplicate$ -- 36
-empty$ -- 85
-format.name$ -- 12
-if$ -- 195
+cite$ -- 5
+duplicate$ -- 54
+empty$ -- 134
+format.name$ -- 20
+if$ -- 314
 int.to.chr$ -- 0
-int.to.str$ -- 3
-missing$ -- 2
-newline$ -- 17
-num.names$ -- 6
-pop$ -- 20
+int.to.str$ -- 5
+missing$ -- 4
+newline$ -- 27
+num.names$ -- 10
+pop$ -- 26
 preamble$ -- 1
-purify$ -- 12
+purify$ -- 20
 quote$ -- 0
-skip$ -- 29
+skip$ -- 39
 stack$ -- 0
-substring$ -- 52
-swap$ -- 10
+substring$ -- 94
+swap$ -- 14
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 12
+type$ -- 20
 warning$ -- 0
-while$ -- 11
-width$ -- 4
-write$ -- 30
+while$ -- 18
+width$ -- 6
+write$ -- 50
 (There was 1 warning)
