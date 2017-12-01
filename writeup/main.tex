@@ -110,6 +110,43 @@ WEBPROXY simulated I/O on a web proxy server. Multiple files were created, writt
 This benchmark is similar to WEBPROXY, however it runs open-read-close operations on files in a directory tree and has an additional step of appending. 
 
 \section{Results}
+\subsection{IOzone}
+When running ext4, the file system's performance did not seem to be affected much by running in docker. Let's take the throughput of 
+sequential writes for example. Figure \ref{fig:ext4-host-write} and Figure \ref{fig:ext4-docker-write} are surface graphs that shows the throughput of 
+sequential writes in KB/s of different file sizes and chunk sizes, on host directly and in docker respectively. The higher the the altitude of the 
+surface, the higher the average throughput IOzone was able to run at that combination of file size and chunk size. As can be seen, they tips of both 
+surface were at about the same combination of file size and chunk size. It might not be clear on the graph but, from the data, they are both about 85MB/s. \\
+
+It should be clear that the overall shape of the two graphs are very similar, except that in Figure \ref{fig:ext4-host-write} there are more peaks 
+(yellow area) than in Figure \ref{fig:ext4-docker-write} because of the small but noticeable overhead of running inside docker. That means that the 
+overhead of file accessing operations executed 
+from inside the container is constant regardless of what file size someone is working with and what chunk size a specific application would prefer to 
+use. Similar conclusion is made about other operations including random writes, sequential read, and random read. \\
+
+For ReiserFS and XFS, the results were very similar: running in docker imposes small but noticeable overhead on the bandwidth for all file 
+operations(random IO and sequential IO). As we compare the results, we found that the bandwidth overhead for all operations are the same across 
+file systems. Therefore, regarding the differences between file systems, we conclude that non of the three file systems we studied here suffers 
+more overhead by running inside docker than the two. It is not the purpose of this study, but we do discover 
+that, in IOzone, the bandwidth of XFS is greater 
+than that of ext4, which is greater than ReiserFS. 
+
+
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=3in]{../results/ext4-host-write.png}
+\caption{Native Sequential Write(100bytes/s)}
+\label{fig:ext4-host-write}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=3in]{../results/ext4-docker-write.png}
+\caption{Docker Sequential Write(100bytes/s)}
+\label{fig:ext4-docker-write}
+\end{figure}
+
+
 \subsection{Filebench}
 Figures \ref{fig:arch_workload_boxplots} \& \ref{fig:dock_workload_boxplots} both depict the results Filebench workloasd on each filesystem. Figures \ref{fig:arch_relative_performance} \& \ref{fig:dock_relative_performance} are relative performance graphs of ext4, reiserfs and xfs on Arch Linux and Docker respectively. As illustrated by these figures, ext4 outperforms reiserfs across the board, and outperforms xfs with the exception of the WEBSERVER benchmark. Since ext4 is the highest performing filesystem, results are scaled to it in the relative performance graphs. Values less than 1 mean that the throughput on those filesystems performed worse than on ext4. 
 
