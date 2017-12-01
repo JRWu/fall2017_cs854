@@ -52,11 +52,7 @@ University of Waterloo
 
 \subsection*{Abstract}
 
-Container as a Service (CaaS) platforms are being offered to personal and enterprise applications.
-Like All virtualization services, virtual machine for example, container imposes several runtime overhead to applications running inside it.
-In this paper, we are looking at the overhead filesystems experience when running in containers and how different filesystems may suffer 
-different level of overhead.
-We attempt to profile the performance of three separate filesystems, ext4, reiserfs, and xfs running ontop of Arch Linux.
+Container as a Service (CaaS) platforms are being offered to personal and enterprise applications. In all virtualization services, virtual machines for example, containers impose some runtime overhead to applications which run inside of them. In this paper, we are looking at the overhead filesystems experience when running in containers and how different filesystems may suffer different level of overhead. We attempt to profile the performance of three separate filesystems, ext4, reiserfs, and xfs running ontop of Arch Linux.
 
 
 
@@ -72,23 +68,16 @@ We make the following contributions:
 \end{itemize}
 
 \section{Methods}
-In this section, we discuss the setups of our experiments. We do not attempt to re-invent the wheel by writing ad-hoc benchmarks. Instead, we leverage existing benchmarks such as Filebench and IOzone.
+In this section, we discuss the setup of our experiments. We do not attempt to re-invent the wheel by writing ad-hoc benchmarks. Instead, we leverage existing benchmarks such as Filebench and IOzone.
 
 \subsection{Environment}
-For this project, we were using Arch linux distribution, version 4.13.12-1-ARCH, running on a quad-core AMD A8-7600 Radeon R7 with 4 gigabytes
- of installed memory. The disk we were using was a WD 500GB, 7200rpm hard drive with 32MB cache. We chose Arch over other alternatives 
- mainly because it is lightweight, meaning that there will be very little daemons competing resources with our bench marks. 
+For this project, we were using Arch linux distribution, version 4.13.12-1-ARCH, running on a quad-core AMD A8-7600 Radeon R7 with 4 gigabytes of installed memory. The disk we were using was a WD 500GB, 7200rpm hard drive with 32MB cache. We chose Arch over other alternatives mainly because it is lightweight, meaning that there will not be as many daemons competing with our benchmarks for resources.
 
 \subsection{Docker}
 Docker version 17.06.2-ce, API version 1.3, Go version go1.8.3, and git commit cec0b72 were used in this project. The base container was pulled from base/archlinux. All relevant code to regenerate the docker container and environment can be found in Section \ref{Availability}.
 
 \subsection{IOzone}
-IOzone is an open source file system benchmark tool. It generates and measures a variety of file operations in a "brute force" way. It tests 
-14 operations including sequential IO and random IO. The command we were using is : ./iozone -a -R -g 3G. The "-a" option tells IOzone
-to run all tests. "-g 3G" tells IOzone try files with size up to 3GB. We are limiting the file size to be no grater than 3GB because anything
-bigger than that runs extremely slow and even crashes the system. This should not be a thread to validity since files bigger than 3GB are not 
-that common. What IOzone does on this command is that for each size from 64KB to 3GB, that is power of 2 (64KB, 128KB, etc.), it divides the 
-files into chunks and perform the requests one after another. It also uses different chunk sizes from starting from 4KB up to the size of the file. 
+IOzone is an open source file system benchmark tool. It generates and measures a variety of file operations in a "brute force" way. It tests 14 operations including sequential IO and random IO. The command we were using is : ./iozone -a -R -g 3G. The "-a" option tells IOzone to run all tests. "-g 3G" tells IOzone try files with size up to 3GB. We are limiting the file size to be no grater than 3GB because anything bigger than that runs extremely slow and even crashes the system. This should not be a thread to validity since files bigger than 3GB are not that common. What IOzone does on this command is that for each size from 64KB to 3GB, that is power of 2 (64KB, 128KB, etc.), it divides the  files into chunks and perform the requests one after another. It also uses different chunk sizes from starting from 4KB up to the size of the file. 
 
 \subsection{Filebench}
 Filebench, a popular filesystem and storage benchmark for I/O profiling is used to profile our three filesystems, as it permits custom and scalable workloads. Unlike Iozone, Filebench can run workloads that mimic the real world situations.  We utilized five workloads which shipped with Filebench: FILESERVER, VARMAIL, VIDEOSERVER, WEBPROXY and WEBSERVER. All scripts were executed with sudo privileges. 
@@ -112,29 +101,16 @@ This benchmark is similar to WEBPROXY, however it runs open-read-close operation
 
 \section{Results}
 \subsection{IOzone}
-When running ext4, the file system's performance did not seem to be affected much by running in docker. Let's take the throughput of 
-sequential writes for example. Figure \ref{fig:ext4-host-write} and Figure \ref{fig:ext4-docker-write} are surface graphs that shows the throughput of 
-sequential writes in KB/s of different file sizes and chunk sizes, on host directly and in docker respectively. The higher the the altitude of the 
-surface, the higher the average throughput IOzone was able to run at that combination of file size and chunk size. As can be seen, they tips of both 
-surface were at about the same combination of file size and chunk size. It might not be clear on the graph but, from the data, they are both about 85MB/s. \\
+When running ext4, the file system's performance did not seem to be affected much when running in docker. Let's take the throughput of sequential writes for example. Figure \ref{fig:ext4-host-write} and Figure \ref{fig:ext4-docker-write} are surface graphs that shows the throughput of sequential writes in KB/s of different file sizes and chunk sizes, on host directly and in docker respectively. The higher the the altitude of the surface, the higher the average throughput IOzone was able to run at that combination of file size and chunk size. As illustrated by the figures, the tips of both surfaces were at about the same combination of file size and chunk size. It might not be clear on the graphs but from the data, both peak at approximately 85MB/s. \\
 
-It should be clear that the overall shape of the two graphs are very similar, except that in Figure \ref{fig:ext4-host-write} there are more peaks 
-(yellow area) than in Figure \ref{fig:ext4-docker-write} because of the small but noticeable overhead of running inside docker. That means that the 
-overhead of file accessing operations executed 
-from inside the container is constant regardless of what file size someone is working with and what chunk size a specific application would prefer to 
-use. Similar conclusion is made about other operations including random writes, sequential read, and random read. \\
+It should be clear that the overall shape of the two graphs are very similar, except that in Figure \ref{fig:ext4-host-write} there are more peaks (yellow area) than in Figure \ref{fig:ext4-docker-write} because of the small but noticeable overhead of running inside docker. That means that the overhead of file accessing operations executed from inside the container is constant regardless of what file size someone is working with and what chunk size a specific application would prefer to use. Similar conclusions are made about other operations including random writes, sequential read, and random read. \\
 
-For ReiserFS and XFS, the results were very similar: running in docker imposes small but noticeable overhead on the bandwidth for all file 
-operations(random IO and sequential IO). As we compare the results, we found that the bandwidth overhead for all operations are the same across 
-file systems. Therefore, regarding the differences between file systems, we conclude that non of the three file systems we studied here suffers 
-more overhead by running inside docker than the two. It is not the purpose of this study, but we do discover 
-that, in IOzone, the bandwidth of XFS is greater 
-than that of ext4, which is greater than ReiserFS. \\
+For ReiserFS and XFS, the results were very similar: running in docker imposes a small but noticeable overhead on the bandwidth for all file operations(random IO and sequential IO). As we compare the results, we found that the bandwidth overhead for all operations is the same across all three file systems. From these results, we can conclude that no one filesystem has a higher performance overhead than the other two when running inside docker. We also discover that in IOzone benchmarks, the bandwidth of xfs is greater than that of ext4, which is in turn greater than reiserfs.\\
 
 \noindent\fbox{
     \parbox{\columnwidth}{
     	\centering
-        \textit{Docker imposes small but noticeable overhead for file access operations on all three file systems equally. }
+        \textit{Docker imposes an equally small but noticeable overhead for file access operations on all three file systems. }
     }
 }
 \\\\
@@ -230,12 +206,10 @@ FILESERVER & 1.01 & 0.95 & 1.29 \\
 Filebench is not fully representative of a filesystem's performance. Filebench primarily evaluates the I/O performance of a disk, and is not tuned to evaluate the caching and metadata dimensions of a disk~\cite{tarasov2011benchmarking}. Workloads specified in the benchmarks used the default values that shipped with Filebench, and were not tweaked. These could have been adjusted to better reflect the capability of our server. 
 We observed a peculiarity in our results, such as how VARMAIL and VIDEOSERVER results differ greatly in our Arch Linux environment, but are very similar in the Docker environment. Table~\ref{tab:dock_relative_arch} depicts the benchmark results of Docker scaled to native Arch Linux. Surprisingly, there are five benchmarks that run better in the Docker container than in native Arch Linux. These benchmarks are FILESERVER-ext4, FILESERVER-xfs, VIDEOSERVER-reiserfs, VIDEOSERVER-xfs, and WEBPROXY-xfs. These results are surprising as execution in a container should not outperform execution on the host machine. One reason why Docker results may be better than native Arch Linux is because of the isolation of the execution environment within Docker. Both scripts were run in privileged mode, however there could be some interference from other system processes during the native execution. This suggests that there is some unknown factor affecting our results. Thus, we refrain from making absolute claims that one filesystem is better than another, and only provide suggestions. Additionally, due to this discrepancy in execution between native Arch Linux and Docker, we do not perform any statistical tests comparing the performance difference of host execution vs container execution. \\
 
-In IOzone results, we concluded that the overhead of running in docker was equal for all three file systems. This was drawn without solid statistical 
-support. But we still believe that this conclusion is valid since the overhead was so small: less than 5MB/s of bandwidth reduction.
+In IOzone results, we concluded that the overhead of running in docker was approximately equal for all three file systems. This was drawn without solid statistical support as we had few samples. We would need more samples in order to have enough statistical power to determine whether or not the difference is significant. However, we believe that this conclusion is valid since the overhead was so small: less than 5MB/s of bandwidth reduction. This suggests that the overhead between docker and native linux is identical.
 
 \section{Future Work}
 Future work includes tuning the default Filebench workloads in order to stress our hardware with a representative workload. We only examined one dimension of filesytems, I/O performance, yet there are multiple others such as the on-disk performance, caching performance and even metadata performance. Inclusion of other benchmarking software could allow us to make more concrete claims about filesystems in general and their differences.\\
-Another future would be to include more file systems
 
 This study could be repeated with the inclusion of other filsystems. 
 
@@ -248,11 +222,9 @@ All relevant scripts and data can be retireved from the following repository:
 {\tt https://github.com/JRWu/fall2017\_cs854/}
 \end{center}
 
-
 {\footnotesize \bibliographystyle{acm}
 
 \theendnotes
-
 
 \newpage
 \bibliography{bibliography}}
