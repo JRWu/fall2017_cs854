@@ -52,14 +52,12 @@ University of Waterloo
 
 \subsection*{Abstract}
 
-Container as a Service (CaaS) platforms are being offered to personal and enterprise applications. In all virtualization services, virtual machines for example, containers impose some runtime overhead to applications which run inside of them. In this paper, we are looking at the overhead filesystems experience when running in containers and how different filesystems may suffer different level of overhead. We attempt to profile the performance of three separate filesystems, ext4, reiserfs, and xfs running ontop of Arch Linux.
-
-
+Container as a Service (CaaS) platforms are becoming increasingly popular with both personal and enterprise applications~\cite{anderson2015docker}. In all virtualization services, virtual machines for example, containers impose some runtime overhead to applications which run inside of them. In this paper, we are looking at the overhead filesystems experience when running in containers and how different filesystems may suffer different level of overhead. We attempt to profile the performance of three separate filesystems, ext4, reiserfs, and xfs running ontop of Arch Linux.
 
 \section{Introduction}
 Filesystems are the implementation of specific rules and principles governing how data is stored and retrieved on storage medium. At the time of writing, there are multiple various filesystems supported on the Linux operating system including ext4, reiserfs, xfs and many more. These filesystems all contain central concepts such as blocks and inodes, but differ subtly in their implementations~\cite{TLDP}.
 
-Containers, also known as standardized units of software, are executables built ontop of a kernel. These containers offer a standardized execution environment agnostic to the environment the container is installed on. In this paper, we chose to examine Docker, a popular and free platform for creating and running containers~\cite{anderson2015docker}~\cite{rad2017introduction}. Docker has been championed by researchers as a platform which allows for reproducible research~\cite{boettiger2015introduction}. We are interested in researching whether or not container based filesystem operations incur a significant performance overhead relative to native filesystem operations.
+Containers, also known as standardized units of software, are executables built ontop of a kernel. These containers offer a standardized execution environment agnostic to the environment the container is installed on. In this paper, we chose to examine Docker, a popular and free platform for creating and running containers~\cite{rad2017introduction}. Docker has been championed by researchers as a platform which allows for reproducible research~\cite{boettiger2015introduction}. We are interested in researching whether or not container based filesystem operations incur a significant performance overhead relative to native filesystem operations.
 
 We make the following contributions:
 \begin{itemize}
@@ -105,7 +103,7 @@ When running ext4, the file system's performance did not seem to be affected muc
 
 It should be clear that the overall shape of the two graphs are very similar, except that in Figure \ref{fig:ext4-host-write} there are more peaks (yellow area) than in Figure \ref{fig:ext4-docker-write} because of the small but noticeable overhead of running inside docker. That means that the overhead of file accessing operations executed from inside the container is constant regardless of what file size someone is working with and what chunk size a specific application would prefer to use. Similar conclusions are made about other operations including random writes, sequential read, and random read. \\
 
-For ReiserFS and XFS, the results were very similar: running in docker imposes a small but noticeable overhead on the bandwidth for all file operations(random IO and sequential IO). As we compare the results, we found that the bandwidth overhead for all operations is the same across all three file systems. From these results, we can conclude that no one filesystem has a higher performance overhead than the other two when running inside docker. We also discover that in IOzone benchmarks, the bandwidth of xfs is greater than that of ext4, which is in turn greater than reiserfs.\\
+For reiserfs and xfs, the results were very similar: running in docker imposes a small but noticeable overhead on the bandwidth for all file operations(random IO and sequential IO). As we compare the results, we found that the bandwidth overhead for all operations is the same across all three file systems. From these results, we can conclude that no one filesystem has a higher performance overhead than the other two when running inside docker. We also discover that in IOzone benchmarks, the bandwidth of xfs is greater than that of ext4, which is in turn greater than reiserfs.\\
 
 \noindent\fbox{
     \parbox{\columnwidth}{
@@ -211,7 +209,7 @@ In IOzone results, we concluded that the overhead of running in docker was appro
 \section{Future Work}
 Future work includes tuning the default Filebench workloads in order to stress our hardware with a representative workload. We only examined one dimension of filesytems, I/O performance, yet there are multiple others such as the on-disk performance, caching performance and even metadata performance. Inclusion of other benchmarking software could allow us to make more concrete claims about filesystems in general and their differences.\\
 
-This study could be repeated with the inclusion of other filsystems. 
+IOzone benchmarks could be run multiple times in Docker and native linux in order to obtain enough samples for a statistical test of difference between the two. This study could be repeated with the inclusion of other filsystems. 
 
 \section{Acknowledgments}
 We thank Dr. Tim Brecht for providing guidance about the project such as recommending papers relevant to benchmarking filesystems. 
