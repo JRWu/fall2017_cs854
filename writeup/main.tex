@@ -129,7 +129,15 @@ operations(random IO and sequential IO). As we compare the results, we found tha
 file systems. Therefore, regarding the differences between file systems, we conclude that non of the three file systems we studied here suffers 
 more overhead by running inside docker than the two. It is not the purpose of this study, but we do discover 
 that, in IOzone, the bandwidth of XFS is greater 
-than that of ext4, which is greater than ReiserFS. 
+than that of ext4, which is greater than ReiserFS. \\
+
+\noindent\fbox{
+    \parbox{\columnwidth}{
+    	\centering
+        \textit{Docker imposes small but noticeable overhead for file access operations on all three file systems equally. }
+    }
+}
+\\\\
 
 
 
@@ -218,13 +226,16 @@ FILESERVER & 1.01 & 0.95 & 1.29 \\
 \end{table}
 
 
-\section{Discussion}\label{Discussion}
-\subsection{Threats To Validity}
+\section{Threats To Validity}
 Filebench is not fully representative of a filesystem's performance. Filebench primarily evaluates the I/O performance of a disk, and is not tuned to evaluate the caching and metadata dimensions of a disk~\cite{tarasov2011benchmarking}. Workloads specified in the benchmarks used the default values that shipped with Filebench, and were not tweaked. These could have been adjusted to better reflect the capability of our server. 
-We observed a peculiarity in our results, such as how VARMAIL and VIDEOSERVER results differ greatly in our Arch Linux environment, but are very similar in the Docker environment. Table~\ref{tab:dock_relative_arch} depicts the benchmark results of Docker scaled to native Arch Linux. Surprisingly, there are five benchmarks that run better in the Docker container than in native Arch Linux. These benchmarks are FILESERVER-ext4, FILESERVER-xfs, VIDEOSERVER-reiserfs, VIDEOSERVER-xfs, and WEBPROXY-xfs. These results are surprising as execution in a container should not outperform execution on the host machine. One reason why Docker results may be better than native Arch Linux is because of the isolation of the execution environment within Docker. Both scripts were run in privileged mode, however there could be some interference from other system processes during the native execution. This suggests that there is some unknown factor affecting our results. Thus, we refrain from making absolute claims that one filesystem is better than another, and only provide suggestions. Additionally, due to this discrepancy in execution between native Arch Linux and Docker, we do not perform any statistical tests comparing the performance difference of host execution vs container execution. 
+We observed a peculiarity in our results, such as how VARMAIL and VIDEOSERVER results differ greatly in our Arch Linux environment, but are very similar in the Docker environment. Table~\ref{tab:dock_relative_arch} depicts the benchmark results of Docker scaled to native Arch Linux. Surprisingly, there are five benchmarks that run better in the Docker container than in native Arch Linux. These benchmarks are FILESERVER-ext4, FILESERVER-xfs, VIDEOSERVER-reiserfs, VIDEOSERVER-xfs, and WEBPROXY-xfs. These results are surprising as execution in a container should not outperform execution on the host machine. One reason why Docker results may be better than native Arch Linux is because of the isolation of the execution environment within Docker. Both scripts were run in privileged mode, however there could be some interference from other system processes during the native execution. This suggests that there is some unknown factor affecting our results. Thus, we refrain from making absolute claims that one filesystem is better than another, and only provide suggestions. Additionally, due to this discrepancy in execution between native Arch Linux and Docker, we do not perform any statistical tests comparing the performance difference of host execution vs container execution. \\
+
+In IOzone results, we concluded that the overhead of running in docker was equal for all three file systems. This was drawn without solid statistical 
+support. But we still believe that this conclusion is valid since the overhead was so small: less than 5MB/s of bandwidth reduction.
 
 \section{Future Work}
-Future work includes tuning the default Filebench workloads in order to stress our hardware with a representative workload. We only examined one dimension of filesytems, I/O performance, yet there are multiple others such as the on-disk performance, caching performance and even metadata performance. Inclusion of other benchmarking software could allow us to make more concrete claims about filesystems in general and their differences.
+Future work includes tuning the default Filebench workloads in order to stress our hardware with a representative workload. We only examined one dimension of filesytems, I/O performance, yet there are multiple others such as the on-disk performance, caching performance and even metadata performance. Inclusion of other benchmarking software could allow us to make more concrete claims about filesystems in general and their differences.\\
+Another future would be to include more file systems
 
 This study could be repeated with the inclusion of other filsystems. 
 
